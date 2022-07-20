@@ -8,17 +8,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/admin" )
 public class AdminController {
     @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping("/get")
+    @GetMapping("/getAdmin")
     String getAdmin(){
         return "This is admin!";
     }
     @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping("/create")
+    @GetMapping("/createUser")
     String createUser(){
         return "User created!";
     }
     @PreAuthorize("hasAuthority('ADMIN')")
-    @GetMapping("/delete")
+    @GetMapping("/deleteUser")
     String deleteUser(){
         return "User deleted!";
     }
