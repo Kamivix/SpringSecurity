@@ -1,5 +1,7 @@
 package com.example.springsecurity.config;
 
+import com.example.springsecurity.controller.UserController;
+import com.example.springsecurity.permission.Perm;
 import org.springframework.boot.autoconfigure.graphql.ConditionalOnGraphQlSchema;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 @Configuration
-@EnableMethodSecurity
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
@@ -25,16 +28,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+
+
                 .csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/api/user" )
-                .hasAnyRole("USER","ADMIN")
-                .antMatchers("/api/admin" )
-                .hasRole("ADMIN")
-                .anyRequest()
-                .authenticated()
-                .and()
                 .httpBasic();
+//                .csrf().disable()
+//                .authorizeRequests()
+//                .antMatchers("/api/user" )
+//                .hasAnyRole("USER","ADMIN")
+//                .antMatchers("/api/admin" )
+//                .hasRole("ADMIN")
+//                .anyRequest()
+//                .authenticated()
+//                .and()
+//                .httpBasic();
     }
 
 
@@ -42,23 +49,55 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     @Bean
     protected UserDetailsService userDetailsService() {
-        UserDetails user=
+//        UserDetails user=
+//                User.builder()
+//                        .username("user")
+//                        .password(encoder().encode("user"))
+//                        .roles("USER")
+//                        .build();
+//UserDetails admin=
+//        User.builder()
+//                .username("admin")
+//                .password(encoder().encode("admin"))
+//                .roles("ADMIN")
+//                .build();
+//        return new InMemoryUserDetailsManager(
+//                user,
+//                admin
+//        );
+
+
+        UserDetails user =
                 User.builder()
                         .username("user")
                         .password(encoder().encode("user"))
-                        .roles("USER")
+                        .authorities(Perm.USER_EDIT.name(),Perm.USER_READ.name())
                         .build();
-UserDetails admin=
+
+        UserDetails admin=
         User.builder()
                 .username("admin")
                 .password(encoder().encode("admin"))
-                .roles("ADMIN")
+                .authorities(Perm.ADMIN.name())
                 .build();
+
+        UserDetails spectator=
+                User.builder()
+                        .username("spectator")
+                        .password(encoder().encode("spectator"))
+                        .authorities(Perm.USER_EDIT.name())
+                        .build();
+
         return new InMemoryUserDetailsManager(
                 user,
-                admin
+                admin,
+                spectator
         );
+
     }
+
+
+
 
     @Bean
     public PasswordEncoder encoder() {
