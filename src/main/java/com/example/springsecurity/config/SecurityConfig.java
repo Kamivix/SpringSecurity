@@ -17,16 +17,17 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class SecurityConfig  {
 
 
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
 
 
@@ -42,11 +43,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .authenticated()
 //                .and()
 //                .httpBasic();
+        return http.build();
     }
 
 
 
-    @Override
+
     @Bean
     protected UserDetailsService userDetailsService() {
 //        UserDetails user=
